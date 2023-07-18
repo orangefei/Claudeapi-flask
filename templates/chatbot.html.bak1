@@ -1,0 +1,8 @@
+<!-- templates/chatbot.html -->
+
+<form method="POST">
+  <input name="prompt">
+  <input type="submit">  
+</form>
+
+<div>{{ answer }}</div>

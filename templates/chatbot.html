@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Claude 聊天机器人</title>
+	<style>
+		body {
+		  font-family: Arial;
+		}
+
+		h1 {
+		  text-align: center; 
+		}
+
+		form {
+		  max-width: 600px;
+		  margin: 0 auto;
+		}
+
+		.chat-transcript {
+		  background: #f4f4f4;
+		  border-radius: 4px;
+		  padding: 20px;  
+		}
+
+		.chat-input {
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		}
+
+		textarea {
+		  flex-grow: 1;
+		  padding: 12px 20px;
+		  box-sizing: border-box;
+		  border: 2px solid #ccc;
+		  border-radius: 4px;
+		  background-color: #f8f8f8;
+		  font-size: 16px;
+		  resize: none;
+		  margin-right: 10px;
+		}
+
+		button {
+		  background-color: #4CAF50;
+		  color: white;
+		  padding: 14px 20px;
+		  margin: 8px 0;
+		  border: none;
+		  cursor: pointer;
+		  opacity: 0.9;
+		  border-radius: 4px;
+		}
+
+		button:hover {
+		  opacity:1;
+		}
+
+		.submit-container {
+		  display: flex;
+		  align-items: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>Claude 聊天机器人</h1>
+
+	<div class="chat-transcript">
+		{{ answer }}  
+	</div>
+
+	<form method="POST">
+	  <div class="chat-input">
+	    <textarea name="prompt" rows="1" placeholder="请开始您的提问"></textarea>
+	    <div class="submit-container">
+	      <button type="submit">发送</button>
+	    </div>
+	  </div>
+	</form>
+</body>
+</html>

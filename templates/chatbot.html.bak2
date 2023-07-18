@@ -1,0 +1,61 @@
+<!-- templates/chatbot.html -->
+
+<style>
+body {
+  font-family: Arial;
+}
+
+h1 {
+  text-align: center; 
+}
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+.chat-transcript {
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 20px;  
+}
+</style>
+
+
+<h1>Claude 聊天机器人</h1>
+
+<div class="chat-transcript">
+{{ answer }}  
+</div>
+
+<form method="POST">
+  <textarea name="prompt" rows="1" placeholder="请开始您的提问"></textarea>
+
+  <button type="submit">发送</button>
+</form>

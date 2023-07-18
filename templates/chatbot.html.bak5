@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chatbot</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+}
+.header {
+background-color: #333;
+color: #fff;
+padding: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+height: 60px;
+}
+.header h1 {
+font-size: 24px;
+margin: 0;
+}
+.description {
+padding: 20px;
+font-size: 18px;
+background-color: #f2f2f2;
+}
+.container {
+display: flex;
+flex-direction: column;
+height: 100vh;
+}
+.conversation {
+flex: 1;
+padding: 20px;
+overflow-y: scroll;
+font-size: 16px;
+}
+.conversation .message {
+margin-bottom: 20px;
+}
+.input {
+display: flex;
+align-items: center;
+border-top: 1px solid #ccc;
+height: 60px;
+padding: 10px 20px;
+}
+.input input {
+flex: 1;
+height: 100%;
+font-size: 16px;
+}
+.input button {
+font-size: 16px;
+padding: 10px 20px;
+background-color: #333;
+color: #fff;
+border: none;
+cursor: pointer;
+}
+.modal {
+display: none;
+position: fixed;
+z-index: 1;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+background-color: #f2f2f2;
+margin: 15% auto;
+padding: 20px;
+border: 1px solid #888;
+width: 80%;
+max-width: 600px;
+}
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.modal-header h2 {
+margin: 0;
+}
+.modal-header button {
+background-color: transparent;
+border: none;
+font-size: 24px;
+font-weight: bold;
+cursor: pointer;
+}
+.modal-body {
+margin-top: 20px;
+}
+.modal-body pre {
+white-space: pre-wrap;
+word-wrap: break-word;
+}
+.modal-footer {
+display: flex;
+justify-content: flex-end;
+margin-top: 20px;
+}
+.modal-footer button {
+padding: 10px 20px;
+background-color: #333;
+color: #fff;
+border: none;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Chatbot</h1>
+<div>
+<button id="clear-btn">清空对话</button>
+<button id="history-btn">历史对话</button>
+</div>
+</div>
+<div class="description">
+<p>本项目为公益项目。请输入您的问题或话题，聊天机器人将尽力为您提供有用的回答。</p>
+</div>
+<div class="conversation" id="conversation">
+<!-- 对话消息将在这里显示 -->
+</div>
+<div class="input">
+<input type="text" id="input-box" placeholder="请在这里输入您的问题或话题">
+<button id="send-btn">发送</button>
+</div>
+</div>
+<div class="modal" id="history-modal">
+<div class="modal-content">
+<div class="modal-header">
+<h2>历史对话记录</h2>
+<button id="close-modal">times;</button>
+</div>
+<div class="modal-body">
+<pre id="history-content"></pre>
+</div>
+<div class="modal-footer">
+<button id="clear-history-btn">清空历史记录</button>
+</div>
+</div>
+</div>
+<script>
+const inputBox = document.getElementById('input-box');
+const sendBtn = document.getElementById('send-btn');
+const clearBtn = document.getElementById('clear-btn');
+const historyBtn = document.getElementById('history-btn');
+const historyModal = document.getElementById('history-modal');
+const historyContent = document.getElementById('history-content');
+const closeBtn = document.getElementById('close-modal');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
+const conversation = document.getElementById('conversation');
+
+function addMessage(sender, text) {
+const messageEl = document.createElement('div');
+messageEl.classList.add('message');
+messageEl.innerHTML = `
+<strong>${sender}:</strong> ${text}
+`;
+conversation.appendChild(messageEl);
+conversation.scrollTop = conversation.scrollHeight;
+}
+
+sendBtn.addEventListener('click', () => {
+const text = inputBox.value.trim();
+if (text) {
+addMessage('我', text);
+inputBox.value = '';
+fetch('/chatbot', {
+method: 'POST',
+body: JSON.stringify({ prompt: text }),
+headers: {
+'Content-Type': 'application/json'
+}
+})
+.then(response => response.json())
+.then(result => {
+const answer = result.answer;
+addMessage('机器人', answer);
+})
+.catch(error => {
+console.error(error);
+});
+}
+});
+
+clearBtn.addEventListener('click', () => {
+conversation.innerHTML = '';
+});
+
+historyBtn.addEventListener('click', () => {
+fetch('/history')
+.then(response => response.json())
+.then(result => {
+const history = result.history;
+historyContent.textContent = history;
+historyModal.style.display = 'block';
+})
+.catch(error => {
+console.error(error);
+});
+});
+
+closeBtn.addEventListener('click', () => {
+historyModal.style.display = 'none';
+});
+
+clearHistoryBtn.addEventListener('click', () => {
+fetch('/clear-history', { method: 'POST' })
+.then(response => response.json())
+.then(result => {
+if (result.success) {
+historyContent.textContent = '';
+}
+})
+.catch(error => {
+console.error(error);
+});
+});
+</script>
+</body>
+</html>
+

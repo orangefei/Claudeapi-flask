@@ -8,7 +8,7 @@ import time
 app = Flask(__name__)
 
 API_URL = 'https://api.anthropic.com/v1/complete'
-API_KEY = "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"
+API_KEY = "sk-ant-api03-oKxB8A-JlW37AAA"
 
 @app.route("/chatbot", methods=['GET', 'POST'])
 def chatbot():

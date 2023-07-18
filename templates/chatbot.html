@@ -1,80 +1,153 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Claude 聊天机器人</title>
-	<style>
-		body {
-		  font-family: Arial;
-		}
+<title>Claude 聊天机器人</title>
+<style>
+body {
+font-family: Arial;
+}
 
-		h1 {
-		  text-align: center; 
-		}
+h1 {
+text-align: center;
+}
 
-		form {
-		  max-width: 600px;
-		  margin: 0 auto;
-		}
+form {
+max-width: 600px;
+margin: 0 auto;
+}
 
-		.chat-transcript {
-		  background: #f4f4f4;
-		  border-radius: 4px;
-		  padding: 20px;  
-		}
+.chat-box {
+background: #f4f4f4;
+border-radius: 4px;
+padding: 20px;
+height: 300px;
+overflow-y: scroll;
+}
 
-		.chat-input {
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		}
+.chat-message {
+margin-bottom: 10px;
+display: flex;
+flex-direction: column;
+}
 
-		textarea {
-		  flex-grow: 1;
-		  padding: 12px 20px;
-		  box-sizing: border-box;
-		  border: 2px solid #ccc;
-		  border-radius: 4px;
-		  background-color: #f8f8f8;
-		  font-size: 16px;
-		  resize: none;
-		  margin-right: 10px;
-		}
+.user-message {
+align-self: flex-start;
+background-color: #ccc;
+color: black;
+border-radius: 10px;
+padding: 10px;
+}
 
-		button {
-		  background-color: #4CAF50;
-		  color: white;
-		  padding: 14px 20px;
-		  margin: 8px 0;
-		  border: none;
-		  cursor: pointer;
-		  opacity: 0.9;
-		  border-radius: 4px;
-		}
+.chatbot-message {
+align-self: flex-end;
+background-color: white;
+color: black;
+border-radius: 10px;
+padding: 10px;
+margin-top: 10px;
+border: 1px solid #ccc;
+}
 
-		button:hover {
-		  opacity:1;
-		}
+.question {
+font-weight: bold;
+margin-bottom: 5px;
+}
+.answer {
+margin-top: 5px;
+}
 
-		.submit-container {
-		  display: flex;
-		  align-items: center;
-		}
-	</style>
+.chat-input {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+/* align child elements to the left */
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+padding: 10px;
+background-color: #f8f8f8;
+}
+
+textarea {
+flex-grow: 1;
+padding: 12px 20px;
+box-sizing: border-box;
+border: 2px solid #ccc;
+border-radius: 4px;
+background-color: #f8f8f8;
+font-size: 16px;
+resize: none;
+margin-right: 10px;
+}
+
+button {
+background-color: #4caf50;
+color: white;
+padding: 14px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+opacity: 0.9;
+border-radius: 4px;
+}
+
+button:hover {
+opacity: 1;
+}
+</style>
 </head>
+
 <body>
-	<h1>Claude 聊天机器人</h1>
+<h1>Claude 聊天机器人</h1>
 
-	<div class="chat-transcript">
-		{{ answer }}  
-	</div>
+<div class="chat-box" id="chat-box">
+<!-- Chat messages will be displayed here -->
+</div>
 
-	<form method="POST">
-	  <div class="chat-input">
-	    <textarea name="prompt" rows="1" placeholder="请开始您的提问"></textarea>
-	    <div class="submit-container">
-	      <button type="submit">发送</button>
-	    </div>
-	  </div>
-	</form>
+<form id="chatbot-form">
+<div class="chat-input">
+<textarea
+name="prompt"
+rows="1"
+placeholder="请开始您的提问"
+id="question-input"
+></textarea>
+<button type="submit">发送</button>
+</div>
+</form>
+
+<script>
+const form = document.querySelector("#chatbot-form");
+const chatBox = document.querySelector("#chat-box");
+
+form.addEventListener("submit", (event) => {
+event.preventDefault();
+const formData = new FormData(form);
+fetch("/chatbot", {
+method: "POST",
+body: formData,
+})
+.then((response) => response.json())
+.then((data) => {
+const chatMessage = document.createElement("div");
+chatMessage.classList.add("chat-message");
+
+const question = document.createElement("div");
+question.classList.add("question");
+question.textContent = "我: " + formData.get("prompt");
+chatMessage.appendChild(question);
+
+const answer = document.createElement("div");
+answer.classList.add("answer");
+answer.textContent = "答案: " + data.answer;
+chatMessage.appendChild(answer);
+
+chatBox.appendChild(chatMessage);
+})
+.catch((error) => console.error(error));
+form.reset();
+});
+</script>
 </body>
 </html>
